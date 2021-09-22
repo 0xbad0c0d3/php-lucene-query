@@ -1,7 +1,8 @@
 <?php
 
-namespace MakinaCorpus\ElasticSearch\Tests;
+namespace MakinaCorpus\Lucene\Tests;
 
+use DateTime;
 use MakinaCorpus\Lucene\Query;
 
 class BasicQueryTest extends \PHPUnit_Framework_TestCase
@@ -10,7 +11,7 @@ class BasicQueryTest extends \PHPUnit_Framework_TestCase
     {
         $query = new Query();
 
-        $now = new \DateTime("@1467205820");
+        $now = new DateTime("@1467205820");
 
         $query
             ->setOperator(Query::OP_AND)

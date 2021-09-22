@@ -42,9 +42,10 @@ class Query extends CollectionQuery
     /**
      * Create new term collection statement
      *
+     * @param string $operator
      * @return TermCollectionQuery
      */
-    public function createTermCollection($operator = Query::OP_AND)
+    public function createTermCollection($operator = Query::OP_AND): TermCollectionQuery
     {
         $statement = new TermCollectionQuery();
         $statement->setOperator($operator);
@@ -59,7 +60,7 @@ class Query extends CollectionQuery
      *
      * @return CollectionQuery
      */
-    public function createCollection($operator = Query::OP_AND)
+    public function createCollection($operator = Query::OP_AND): CollectionQuery
     {
         $statement = new CollectionQuery();
         $statement->setOperator($operator);
@@ -74,7 +75,7 @@ class Query extends CollectionQuery
      *
      * @return TermQuery
      */
-    public function createTerm()
+    public function createTerm(): TermQuery
     {
         $statement = new TermQuery();
 
@@ -88,7 +89,7 @@ class Query extends CollectionQuery
      *
      * @return RangeQuery
      */
-    public function createRange()
+    public function createRange(): RangeQuery
     {
         $statement = new RangeQuery();
 
@@ -100,12 +101,13 @@ class Query extends CollectionQuery
     /**
      * Create new arbitrary range statement
      *
+     * @param null $field
      * @return DateRangeQuery
      */
-    public function createDateRange($field = null)
+    public function createDateRange($field = null): DateRangeQuery
     {
         $statement = new DateRangeQuery();
-        $statement->setField($field);
+        $statement->setField((string)$field);
 
         $this->add($statement);
 
@@ -115,21 +117,21 @@ class Query extends CollectionQuery
     /**
      * Match single term to this query
      *
-     * @param string $field
+     * @param string|null $field
      * @param string|TermQuery $term
-     * @param float $boost
-     * @param float $fuzzyness
+     * @param float|null $boost
+     * @param float|null $fuzzyness
      *
      * @return $this
      */
-    public function matchTerm($field = null, $term, $boost = null, $fuzzyness = null)
+    public function matchTerm(string $field = null, $term = null, ?float $boost = null, float $fuzzyness = null): Query
     {
         $this
             ->createTerm()
-            ->setValue($term)
+            ->setValue((string)$term)
             ->setFuzzyness($fuzzyness)
-            ->setBoost($boost)
-            ->setField($field)
+            ->setBoost((float)$boost)
+            ->setField((string)$field)
         ;
 
         return $this;
@@ -138,18 +140,18 @@ class Query extends CollectionQuery
     /**
      * Require range
      *
-     * @param string $field
+     * @param string|null $field
      * @param mixed $start
      * @param mixed $stop
      * @param boolean $inclusive
      *
      * @return $this
      */
-    public function requireRange($field = null, $start = null, $stop = null, $inclusive = true)
+    public function requireRange(string $field = null, $start = null, $stop = null, bool $inclusive = true): Query
     {
         $this
             ->createRange()
-            ->setField($field)
+            ->setField((string)$field)
             ->setInclusive($inclusive)
             ->setRange($start, $stop)
         ;
@@ -160,7 +162,7 @@ class Query extends CollectionQuery
     /**
      * Require date range
      *
-     * @param string $field
+     * @param string|null $field
      * @param int|string|\DateTime $start
      *   Timestamp, \DateTime parsable string or \DateTime object
      * @param int|string|\DateTime $stop
@@ -169,13 +171,13 @@ class Query extends CollectionQuery
      *
      * @return $this
      */
-    public function requireDateRange($field = null, $start = null, $stop = null, $inclusive = true)
+    public function requireDateRange(string $field = null, $start = null, $stop = null, bool $inclusive = true): Query
     {
         $this
             ->createDateRange()
             ->setInclusive($inclusive)
             ->setRange($start, $stop)
-            ->setField($field)
+            ->setField((string)$field)
         ;
 
         return $this;
@@ -184,18 +186,18 @@ class Query extends CollectionQuery
     /**
      * Require single term to this query
      *
-     * @param string $field
+     * @param string|null $field
      * @param string|TermQuery $term
      *
      * @return $this
      */
-    public function requireTerm($field = null, $term)
+    public function requireTerm(string $field = null, $term = null): Query
     {
         $this
             ->createTerm()
-            ->setValue($term)
+            ->setValue((string)$term)
             ->setExclusion(self::OP_REQUIRE)
-            ->setField($field)
+            ->setField((string)$field)
         ;
 
         return $this;
@@ -204,17 +206,17 @@ class Query extends CollectionQuery
     /**
      * Prohibit single term to this query
      *
-     * @param string $field
+     * @param string|null $field
      * @param string|TermQuery $term
      *
      * @return $this
      */
-    public function prohibitTerm($field = null, $term)
+    public function prohibitTerm(string $field = null, $term = null): Query
     {
         $this
             ->createTerm()
-            ->setValue($term)
-            ->setField($field)
+            ->setValue((string)$term)
+            ->setField((string)$field)
             ->setExclusion(self::OP_PROHIBIT)
         ;
 
@@ -224,25 +226,21 @@ class Query extends CollectionQuery
     /**
      * Match term collection (OR by default)
      *
-     * @param string $field
-     * @param string[]|TermQuery[] $terms
-     * @param float $boost
+     * @param string|null $field
+     * @param string[]|TermQuery[]|null $terms
+     * @param float|null $boost
      * @param string $operator
      *
      * @return $this
      */
-    public function matchTermCollection($field = null, $terms, $boost = null, $operator = self::OP_OR)
+    public function matchTermCollection(string $field = null, array $terms = [], ?float $boost = null, string $operator = self::OP_OR): Query
     {
-        if (!is_array($terms)) {
-            $terms = [$terms];
-        }
-
         $this
             ->createTermCollection()
             ->addAll($terms)
             ->setOperator($operator)
-            ->setField($field)
-            ->setBoost($boost)
+            ->setField((string)$field)
+            ->setBoost((float)$boost)
         ;
 
         return $this;
@@ -252,18 +250,13 @@ class Query extends CollectionQuery
      * Require term collection (OR by default)
      *
      * @param string $field
-     * @param string[]|TermQuery[] $terms
-     * @param float $boost
+     * @param string[]|TermQuery[]|null $terms
      * @param string $operator
      *
      * @return $this
      */
-    public function requireTermCollection($field = null, $terms, $operator = self::OP_OR)
+    public function requireTermCollection(string $field, array $terms, string $operator = self::OP_OR): Query
     {
-        if (!is_array($terms)) {
-            $terms = [$terms];
-        }
-
         $this
             ->createTermCollection()
             ->addAll($terms)

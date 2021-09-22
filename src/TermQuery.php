@@ -12,6 +12,11 @@ class TermQuery extends AbstractFuzzyQuery
      */
     protected $term = null;
 
+    public static function term(string $term): self
+    {
+        return (new static())->setValue($term);
+    }
+
     /**
      * Set term
      *
@@ -19,9 +24,9 @@ class TermQuery extends AbstractFuzzyQuery
      *
      * @return $this
      */
-    public function setValue($term)
+    public function setValue(string $term): TermQuery
     {
-        $this->term = trim((string)$term);
+        $this->term = trim($term);
 
         return $this;
     }
@@ -29,7 +34,7 @@ class TermQuery extends AbstractFuzzyQuery
     /**
      * {@inheritdoc}
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return null === $this->term;
     }
@@ -37,7 +42,7 @@ class TermQuery extends AbstractFuzzyQuery
     /**
      * {@inheritdoc}
      */
-    protected function toRawString()
+    protected function toRawString(): string
     {
         return self::escapeToken($this->term);
     }

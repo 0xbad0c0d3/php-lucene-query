@@ -1,30 +1,34 @@
 {
-    "name" : "makinacorpus/php-lucene",
-    "type" : "library",
-    "description" : "Minimalistic, feature-rich, PHP Lucene syntax query builder",
-    "homepage" : "http://github.com/makinacorpus/php-lucene",
-    "license" : "GPL-2",
-    "authors" : [
-        {
-            "name" : "Pierre Rineau",
-            "email" : "pierre.rineau@makina-corpus.com"
-        },
-        {
-            "name" : "Makina Corpus",
-            "homepage" : "http://makina-corpus.com"
-        }
-    ],
-    "autoload" : {
-        "exclude-from-classmap": [
-            "src/Tests/"
-        ],
-        "psr-4" : {
-            "MakinaCorpus\\Lucene\\" : "src/"
-        }
+  "name": "makinacorpus/php-lucene",
+  "type": "library",
+  "description": "Minimalistic, feature-rich, PHP Lucene syntax query builder",
+  "homepage": "http://github.com/makinacorpus/php-lucene-query",
+  "license": "GPL-2",
+  "authors": [
+    {
+      "name": "Pierre Rineau",
+      "email": "pierre.rineau@makina-corpus.com"
     },
-    "minimum-stability" : "dev",
-    "prefer-stable" : true,
-    "require-dev" : {
-        "phpunit/phpunit" : "^5.1"
+    {
+      "name": "Makina Corpus",
+      "homepage": "http://makina-corpus.com"
     }
+  ],
+  "autoload": {
+    "exclude-from-classmap": [
+      "Tests/"
+    ],
+    "psr-4": {
+      "MakinaCorpus\\Lucene\\": "src/",
+      "MakinaCorpus\\Lucene\\Tests\\": "Tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">7.0|>8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.1"
+  }
 }

@@ -28,7 +28,7 @@ abstract class AbstractFuzzyQuery extends AbstractQuery
      *
      * @return $this
      */
-    public function setFuzzyness($fuzzyness)
+    public function setFuzzyness($fuzzyness): AbstractFuzzyQuery
     {
         if ($fuzzyness != NULL && $fuzzyness !== self::FUZZY_AUTO && (! is_numeric($fuzzyness) || $fuzzyness < 0)) {
             throw new \InvalidArgumentException("Fuzyness/roaming value must be a positive integer, " . print_r($fuzzyness, TRUE) . " given");
@@ -47,7 +47,7 @@ abstract class AbstractFuzzyQuery extends AbstractQuery
      *
      * @return $this
      */
-    public function setRoaming($roaming)
+    public function setRoaming(int $roaming): AbstractFuzzyQuery
     {
         $this->setFuzzyness($roaming);
 
@@ -63,7 +63,7 @@ abstract class AbstractFuzzyQuery extends AbstractQuery
     {
         $raw = trim($this->toRawString());
 
-        if (!isset($raw) || ('' === $raw)) {
+        if ('' === $raw) {
             return '';
         }
 
@@ -75,7 +75,7 @@ abstract class AbstractFuzzyQuery extends AbstractQuery
             $raw = $this->exclusion . $raw;
         } else {
             if (!empty($this->fuzzyness)) {
-                if ($this->fuzzyness === self::FUZZY_AUTO) {
+                if (self::FUZZY_AUTO === $this->fuzzyness) {
                     $raw .= '~';
                 }
                 else {

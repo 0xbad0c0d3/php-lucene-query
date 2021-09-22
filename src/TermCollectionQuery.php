@@ -10,19 +10,16 @@ class TermCollectionQuery extends CollectionQuery
     /**
      * Add a term
      *
-     * @param string|TermQuery $element
+     * @param AbstractQuery|string $element
      *
      * @return $this
      */
-    public function add($element)
+    public function add($element): CollectionQuery
     {
         if ($element instanceof TermQuery) {
             parent::add($element);
         } else {
-            parent::add(
-                (new TermQuery())
-                    ->setValue($element)
-            );
+            parent::add(TermQuery::term((string)$element));
         }
 
         return $this;
@@ -35,7 +32,7 @@ class TermCollectionQuery extends CollectionQuery
      *
      * @return $this
      */
-    public function addAll(array $terms)
+    public function addAll(array $terms): TermCollectionQuery
     {
         foreach ($terms as $term) {
             $this->add($term);

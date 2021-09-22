@@ -23,7 +23,7 @@ abstract class AbstractQuery
      *
      * @return string
      */
-    public static function escapeToken($token, $force = false)
+    public static function escapeToken(string $token, bool $force = false): string
     {
         $escaped = preg_replace(self::RE_SPECIALS, '\\\\\\0', $token);
 
@@ -42,24 +42,22 @@ abstract class AbstractQuery
     /**
      * Boost float value, NULL for default
      */
-    protected $boost = null;
+    protected $boost = 0.0;
 
     /**
      * Field name
      *
-     * @var int $field
+     * @var string $field
      */
-    protected $field = null;
+    protected $field = '';
 
     /**
      * Set exclusion mode
      *
-     * @param string $exclusive
-     *   Query::OP_REQUIRE or Query::OP_PROHIBIT or null
-     *
+     * @param $exclusion
      * @return $this
      */
-    public function setExclusion($exclusion)
+    public function setExclusion($exclusion): AbstractQuery
     {
         if (!empty($exclusion) && $exclusion !== Query::OP_PROHIBIT && $exclusion !== Query::OP_REQUIRE) {
             throw new \InvalidArgumentException("Exclusion must be Query::OP_REQUIRE or Query::OP_PROHIBIT");
@@ -78,13 +76,13 @@ abstract class AbstractQuery
      *
      * @return $this
      */
-    public function setBoost($boost)
+    public function setBoost(float $boost): AbstractQuery
     {
-        if (!empty($boost) && (!is_numeric($boost) && $boost <= 0)) {
+        if ($boost < 0) {
             throw new \InvalidArgumentException("Boost must be a absolute positive float");
         }
 
-        $this->boost = (float)$boost;
+        $this->boost = $boost;
 
         return $this;
     }
@@ -96,9 +94,9 @@ abstract class AbstractQuery
      *
      * @return $this
      */
-    public function setField($field)
+    public function setField(string $field): AbstractQuery
     {
-        $this->field = (string)$field;
+        $this->field = $field;
 
         return $this;
     }
@@ -108,14 +106,14 @@ abstract class AbstractQuery
      *
      * @return boolean
      */
-    abstract public function isEmpty();
+    abstract public function isEmpty(): bool;
 
     /**
      * Build this specific statement query string
      *
      * @return string
      */
-    abstract protected function toRawString();
+    abstract protected function toRawString(): string;
 
     /**
      * Escape and apply boost and operators surrounding the given string
@@ -136,7 +134,7 @@ abstract class AbstractQuery
 
         if ($this->exclusion) {
             $raw = $this->exclusion . $raw;
-        } else if ($this->boost) {
+        } elseif ($this->boost > 0) {
             $raw .= '^' . $this->boost;
         }
 

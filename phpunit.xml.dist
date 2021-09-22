@@ -12,7 +12,7 @@
 
     <testsuites>
         <testsuite name="PHP Lucene query builder test suite">
-            <directory>./src/Tests/</directory>
+            <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
 

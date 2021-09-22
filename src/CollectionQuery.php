@@ -2,14 +2,16 @@
 
 namespace MakinaCorpus\Lucene;
 
-class CollectionQuery extends AbstractQuery implements
-    \IteratorAggregate,
-    \Countable
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+
+class CollectionQuery extends AbstractQuery implements IteratorAggregate, Countable
 {
     /**
      * @var AbstractQuery[]
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      * Can be Query::OP_AND or Query::OP_OR, or null for default (AND)
@@ -23,7 +25,7 @@ class CollectionQuery extends AbstractQuery implements
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->elements);
+        return new ArrayIterator($this->elements);
     }
 
     /**
@@ -41,7 +43,7 @@ class CollectionQuery extends AbstractQuery implements
      *
      * @return $this
      */
-    public function add($element)
+    public function add($element): CollectionQuery
     {
         if (!$element instanceof AbstractQuery) {
             throw new \InvalidArgumentException("Provided element is not an AbstractQuery instance");
@@ -59,7 +61,7 @@ class CollectionQuery extends AbstractQuery implements
      *
      * @return $this
      */
-    protected function removeElement(AbstractQuery $element)
+    protected function removeElement(AbstractQuery $element): CollectionQuery
     {
         foreach ($this->elements as $key => $existing) {
             if ($existing === $element) {
@@ -77,9 +79,9 @@ class CollectionQuery extends AbstractQuery implements
      *
      * @return $this
      */
-    public function setOperator($operator)
+    public function setOperator(string $operator): CollectionQuery
     {
-        if ($operator !== null && $operator !== Query::OP_AND && $operator !== Query::OP_OR) {
+        if ($operator !== Query::OP_AND && $operator !== Query::OP_OR) {
             throw new \InvalidArgumentException("Operator must be Query::OP_AND or Query::OP_OR");
         }
 
@@ -101,7 +103,7 @@ class CollectionQuery extends AbstractQuery implements
     /**
      * {@inheritdoc}
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->elements);
     }
@@ -109,16 +111,18 @@ class CollectionQuery extends AbstractQuery implements
     /**
      * {@inheritdoc}
      */
-    protected function toRawString()
+    protected function toRawString(): string
     {
         if (empty($this->elements)) {
             return '';
         }
         if (count($this->elements) > 1) {
             $operator = ($this->operator ? (' ' . $this->operator . ' ') : ' ');
+
             return '(' . implode($operator, $this->elements) . ')';
         } else {
             reset($this->elements);
+
             return (string)current($this->elements);
         }
     }

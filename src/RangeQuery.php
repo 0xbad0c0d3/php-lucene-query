@@ -30,9 +30,9 @@ class RangeQuery extends AbstractQuery
      *
      * @return $this
      */
-    public function setInclusive($inclusive = true)
+    public function setInclusive(bool $inclusive = true): RangeQuery
     {
-        $this->inclusive = (bool)$inclusive;
+        $this->inclusive = $inclusive;
 
         return $this;
     }
@@ -50,7 +50,7 @@ class RangeQuery extends AbstractQuery
      *
      * @return $this
      */
-    public function setRange($start, $stop)
+    public function setRange($start, $stop): RangeQuery
     {
         $this->start = $start;
         $this->stop = $stop;
@@ -67,7 +67,7 @@ class RangeQuery extends AbstractQuery
      *
      * @return string
      */
-    protected function renderElement($value)
+    protected function renderElement($value): string
     {
         return (string)$value;
     }
@@ -83,7 +83,7 @@ class RangeQuery extends AbstractQuery
      *
      * @return string
      */
-    protected function escapeElement($value)
+    protected function escapeElement($value): string
     {
         if (empty($value)) {
             $element = '*';
@@ -97,7 +97,7 @@ class RangeQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return false;
     }
@@ -105,7 +105,7 @@ class RangeQuery extends AbstractQuery
     /**
      * {@inheritdoc}
      */
-    protected function toRawString()
+    protected function toRawString(): string
     {
         if (empty($this->start) && empty($this->stop)) {
             return '';
